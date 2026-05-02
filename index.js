@@ -79,6 +79,49 @@ app.put('/user/edit/:index', (req, res) => {
     }
 })
 
+app.post('/user/transfer', (req, res) => {
+    const { fromUserId, toUserId, amount } = req.body
+
+    if (!fromUserId || !toUserId || !amount) {
+        return res.status(400).json({ message: "Не все данные указаны!" })
+    }
+
+    if (fromUserId === toUserId) {
+        return res.status(400).json({ message: "Нельзя перевести средства самому себе!" })
+    }
+
+    const fromUserIndex = users.findIndex(u => u.id === parseInt(fromUserId))
+    const toUserIndex = users.findIndex(u => u.id === parseInt(toUserId))
+
+    if (fromUserIndex === -1) {
+        return res.status(404).json({ message: "Отправитель не найден!" })
+    }
+
+    if (toUserIndex === -1) {
+        return res.status(404).json({ message: "Получатель не найден!" })
+    }
+
+    const transferAmount = parseInt(amount)
+
+    if (isNaN(transferAmount) || transferAmount <= 0) {
+        return res.status(400).json({ message: "Сумма перевода должна быть больше 0!" })
+    }
+
+    if (users[fromUserIndex].balance < transferAmount) {
+        return res.status(400).json({ message: "Недостаточно средств для перевода!" })
+    }
+
+    // Выполняем перевод
+    users[fromUserIndex].balance -= transferAmount
+    users[toUserIndex].balance += transferAmount
+
+    res.json({ 
+        message: `Успешно переведено ${transferAmount} монет!`,
+        fromBalance: users[fromUserIndex].balance,
+        toBalance: users[toUserIndex].balance
+    })
+})
+
 app.post('/user/activePromoCode/:index', (req, res) => {
     const { promoCode } = req.body
     const user = users[parseInt(req.params.index)]
