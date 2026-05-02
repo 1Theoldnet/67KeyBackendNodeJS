@@ -75,7 +75,7 @@ app.post('/user/activePromoCode/:index', (req, res) => {
     }
 
     if (user.activedPromoCodes.includes(promoCode)) {
-        return res.status(400).json({ message: "Этот промокод уже был активирован!" })
+        return res.json({ message: "Этот промокод уже был активирован!" })
     }
 
     const promoCodesBonus = {
@@ -89,7 +89,7 @@ app.post('/user/activePromoCode/:index', (req, res) => {
     const bonus = promoCodesBonus[promoCode]
     
     if (!bonus) {
-        return res.status(400).json({ message: "Неверный промокод!" })
+        return res.json({ message: "Неверный промокод!" })
     }
 
     user.activedPromoCodes.push(promoCode)
