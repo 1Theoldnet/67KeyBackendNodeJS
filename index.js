@@ -55,14 +55,27 @@ app.get('/user/:index', (req, res) => {
 })
 
 app.put('/user/edit/:index', (req, res) => {
-    const { avatarUrl, name, password } = req.body
+    const { avatarUrl, name, password, balance } = req.body
     const user = users[parseInt(req.params.index)]
 
     if (user) {
-        users[parseInt(req.params.index)] = { avatarUrl, name, password, balance: user.balance }
-        res.json({ message: "Пользователь успешно отредактирован!" })
+        // Сохраняем старый баланс если новый не передан
+        const newBalance = balance !== undefined ? balance : user.balance
+        
+        users[parseInt(req.params.index)] = { 
+            avatarUrl: avatarUrl || user.avatarUrl, 
+            name: name || user.name, 
+            password: password || user.password, 
+            balance: newBalance,
+            activedPromoCodes: user.activedPromoCodes,
+            createdAt: user.createdAt
+        }
+        res.json({ 
+            message: "Пользователь успешно отредактирован!",
+            balance: newBalance
+        })
     } else {
-        res.json({ message: "Пользователь не найден!" })
+        res.status(404).json({ message: "Пользователь не найден!" })
     }
 })
 
