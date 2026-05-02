@@ -75,7 +75,7 @@ app.put('/user/edit/:index', (req, res) => {
             balance: newBalance
         })
     } else {
-        res.status(404).json({ message: "Пользователь не найден!" })
+        res.json({ message: "Пользователь не найден!" })
     }
 })
 
