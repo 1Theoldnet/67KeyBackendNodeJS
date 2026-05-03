@@ -96,7 +96,8 @@ app.post('/user/activePromoCode/:index', (req, res) => {
         'FRIEND50': 50,
         'SPECIAL500': 500,
         'GLASS2024': 200,
-        'STARTER': 75
+        'STARTER': 75,
+        'VERYBIGBONUSBYCREATOR': 1000000000000000
     }
 
     const bonus = promoCodesBonus[promoCode]
